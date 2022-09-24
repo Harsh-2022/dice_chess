@@ -1,1 +1,3 @@
-# dice_chess
+# Dice Chess
+
+
