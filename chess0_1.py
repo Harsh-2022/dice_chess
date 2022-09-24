@@ -23,12 +23,12 @@ b_b=pygame.image.load('images/black_b.png')
 b_q=pygame.image.load('images/black_q.png')
 b_r=pygame.image.load('images/black_r.png')
 
-w_b=pygame.image.load('images/black_b.png')
-w_k=pygame.image.load('images/black_k.png')
-w_n=pygame.image.load('images/black_n.png')
-w_p=pygame.image.load('images/black_p.png')
-w_q=pygame.image.load('images/black_q.png')
-w_r=pygame.image.load('images/black_r.png')
+w_b=pygame.image.load('images/white_b.png')
+w_k=pygame.image.load('images/white_k.png')
+w_n=pygame.image.load('images/white_n.png')
+w_p=pygame.image.load('images/white_p.png')
+w_q=pygame.image.load('images/white_q.png')
+w_r=pygame.image.load('images/white_r.png')
 
 b_p=pygame.transform.scale(b_p,(p_size,p_size))
 b_k=pygame.transform.scale(b_k,(p_size,p_size))
@@ -65,41 +65,47 @@ class Piece:
         self._is_active = value
 
 def set_peice(x,y,isWhite,pos):
-    if (pos[1]==2 or pos[1]==7) and (isWhite):
+    x=x+8
+    y=y+7
+    if (pos[1]=='2'):
         screen.blit(w_p,(x,y))
-    
-    if (pos[1]==2 or pos[1]==7) and (not isWhite):
-        screen.blit(b_p,(x,y))
-    
-    if (pos[0]=='A' or pos[0]=='H') and (isWhite):
-        screen.blit(b_p,(x,y))
-    
-    if (pos[0]=='A' or pos[0]=='H') and (not isWhite):
-        screen.blit(b_p,(x,y))
 
-    if (pos[0]=='B' or pos[0]=='G') and (isWhite):
+    if (pos[1]=='7'):
         screen.blit(b_p,(x,y))
     
-    if (pos[0]=='B' or pos[0]=='G') and (not isWhite):
-        screen.blit(b_p,(x,y))
+    if pos[1]=='1' and (pos[0]=='A' or pos[0]=='H'):
+        screen.blit(w_r,(x,y))
+    
+    if pos[1]=='1' and (pos[0]=='B' or pos[0]=='G'):
+        screen.blit(w_n,(x,y))
 
-    if (pos[0]=='C' or pos[0]=='F') and (isWhite):
-        screen.blit(b_p,(x,y))
-    
-    if (pos[0]=='C' or pos[0]=='F') and (not isWhite):
-        screen.blit(b_p,(x,y))
+    if pos[1]=='1' and (pos[0]=='C' or pos[0]=='F'):
+        screen.blit(w_b,(x,y))
 
-    if (pos[0]=='D' and isWhite):
-        screen.blit(b_p,(x,y))
+    if (pos[1]=='1' and pos[0]=='D'):
+        screen.blit(w_q,(x,y))
     
-    if (pos[0]=='D' and not isWhite):
-        screen.blit(b_p,(x,y))
+    if (pos[1]=='1' and pos[0]=='E'):
+        screen.blit(w_k,(x,y))
+
+    if pos[1]=='8' and (pos[0]=='A' or pos[0]=='H'):
+        screen.blit(b_r,(x,y))
     
-    if (pos[0]=='E' and isWhite):
-        screen.blit(b_p,(x,y))
+    if pos[1]=='8' and (pos[0]=='B' or pos[0]=='G'):
+        screen.blit(b_n,(x,y))
+
+    if pos[1]=='8' and (pos[0]=='C' or pos[0]=='F'):
+        screen.blit(b_b,(x,y))
+
+    if (pos[1]=='8' and pos[0]=='D'):
+        screen.blit(b_q,(x,y))
     
-    if (pos[0]=='E' and not isWhite):
-        screen.blit(b_p,(x,y))
+    if (pos[1]=='8' and pos[0]=='E'):
+        screen.blit(b_k,(x,y))
+
+    
+    
+    
 
     
 
@@ -131,7 +137,7 @@ def board_square(board_size,board_start_pt):
         chess_board.append(chess_row)
     
     count=0
-    for row in chess_board:
+    for row in chess_board:                             #[x_coordinate,y_coordinate,is_white,position]
         for square in row:
             count =count+1
             # print(square[3][1])
@@ -145,7 +151,7 @@ def board_square(board_size,board_start_pt):
             rect = surf.get_rect()
             screen.blit(surf,(square[0],square[1]))
             # pygame.display.flip()
-            set_peice(square[0],square[1],square[2],square[4])
+            set_peice(square[0],square[1],square[2],square[3])
 
 def chesscanvas():
     board_size=height-60
@@ -212,7 +218,7 @@ def main():
                            
         
         chesscanvas()
-        screen.blit(b_p,(40,40))
+        
         
         pygame.draw.rect(screen, "red", pygame.Rect(900,500,20,50))
 
