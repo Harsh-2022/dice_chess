@@ -23,10 +23,10 @@ b_b=pygame.image.load('images/black_b.png')
 b_q=pygame.image.load('images/black_q.png')
 b_r=pygame.image.load('images/black_r.png')
 
-w_b=pygame.image.load('images/white_b.png')
 w_k=pygame.image.load('images/white_k.png')
 w_n=pygame.image.load('images/white_n.png')
 w_p=pygame.image.load('images/white_p.png')
+w_b=pygame.image.load('images/white_b.png')
 w_q=pygame.image.load('images/white_q.png')
 w_r=pygame.image.load('images/white_r.png')
 
