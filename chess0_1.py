@@ -3,6 +3,7 @@ from cmath import rect
 from turtle import pos
 import pygame  
 import random
+import time
 
 
 roll_num=3
@@ -45,6 +46,7 @@ cor_1=pygame.transform.scale(cor_1,(300,300))
 cor_2=pygame.transform.scale(cor_2,(300,300))
 cor_3=pygame.transform.scale(cor_3,(300,300))
 cor_4=pygame.transform.scale(cor_4,(300,300))
+frame=[cor_1,cor_2,cor_3,cor_4]
 
 
 
@@ -212,7 +214,7 @@ def chesscanvas():
 
 def dice_show(roll_num):        
     
-    pygame.draw.rect(screen,'grey',pygame.Rect(width-458,height/2-100,200,200))
+    pygame.draw.rect(screen,'grey',pygame.Rect(width-490,height/2-115,270,238))
     screen.blit(pawn_1,(width-500,height/2-150))
     if roll_num==1:
         screen.blit(pawn_1,(width-500,height/2-150))
@@ -236,16 +238,55 @@ def dice_show(roll_num):
 
 def dice_roll():
     global roll_num
-    roll_num=random.randint( 1,6 )
+    global frame
+    # for frame in frame:
+    #     screen.blit(frame,(width-500,height/2-150) )
 
     
     # pygame.draw.rect(screen, "red", pygame.Rect(900,500,20,50))
     print("rolling")
     #print(roll_num)
-    # screen.blit(cor_1,(width-500,height/2-150))
-    # screen.blit(cor_2,(width-500,height/2-150))
-    # screen.blit(cor_3,(width-500,height/2-150))
-    # screen.blit(cor_4,(width-500,height/2-150))
+    screen.blit(cor_1,(width-500,height/2-150))
+    pygame.display.update()
+    time.sleep(0.08)
+    pygame.draw.rect(screen,'grey',pygame.Rect(width-490,height/2-115,270,238))
+    pygame.display.update()
+    screen.blit(cor_2,(width-500,height/2-150))
+    pygame.display.update()
+    time.sleep(0.08)
+    pygame.draw.rect(screen,'grey',pygame.Rect(width-490,height/2-115,270,238))
+    pygame.display.update()
+    screen.blit(cor_3,(width-500,height/2-150))
+    pygame.display.update()
+    time.sleep(0.08)
+    pygame.draw.rect(screen,'grey',pygame.Rect(width-490,height/2-115,270,238))
+    pygame.display.update()
+    screen.blit(cor_4,(width-500,height/2-150))
+    pygame.display.update()
+    time.sleep(0.08)
+    pygame.draw.rect(screen,'grey',pygame.Rect(width-490,height/2-115,270,238))
+    pygame.display.update()
+    screen.blit(cor_1,(width-500,height/2-150))
+    pygame.display.update()
+    time.sleep(0.08)
+    pygame.draw.rect(screen,'grey',pygame.Rect(width-490,height/2-115,270,238))
+    pygame.display.update()
+    screen.blit(cor_2,(width-500,height/2-150))
+    pygame.display.update()
+    time.sleep(0.08)
+    pygame.draw.rect(screen,'grey',pygame.Rect(width-490,height/2-115,270,238))
+    pygame.display.update()
+    screen.blit(cor_3,(width-500,height/2-150))
+    pygame.display.update()
+    time.sleep(0.08)
+    pygame.draw.rect(screen,'grey',pygame.Rect(width-490,height/2-115,270,238))
+    pygame.display.update()
+    screen.blit(cor_4,(width-500,height/2-150))
+    pygame.display.update()
+    time.sleep(0.08)
+    pygame.draw.rect(screen,'grey',pygame.Rect(width-490,height/2-115,270,238))
+    pygame.display.update()
+    roll_num=random.randint( 1,6 )
     dice_show(roll_num)
 
 def main():
@@ -260,6 +301,8 @@ def main():
                     running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if width-415 <= mouse[0] <= width-295 and height/2+120 <= mouse[1] <= height/2+180:
+                    dice_roll()
+                if width-415 <= mouse[0] <= width-295 and (height/2)-180 <= mouse[1] <= (height/2)-120:
                     dice_roll()
                 if width-85 <= mouse[0] <= width-5 and 7 <= mouse[1] <= 60:
                     running = False
