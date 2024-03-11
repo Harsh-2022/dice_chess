@@ -186,6 +186,7 @@ def board_square(board_size,board_start_pt):
             
             rect = surf.get_rect()
             screen.blit(surf,(square[0],square[1]))
+            print(square[0],square[1],square[2],square[3])
             # pygame.display.flip()
             set_peice(square[0],square[1],square[2],square[3])
 
@@ -218,21 +219,21 @@ def dice_show(roll_num):
     screen.blit(pawn_1,(width-500,height/2-150))
     if roll_num==1:
         screen.blit(pawn_1,(width-500,height/2-150))
-        print(roll_num)
+        # print(roll_num)
     if roll_num==2:
-        print(roll_num)
+        # print(roll_num)
         screen.blit(king_2,(width-500,height/2-150))
     if roll_num==3:
-        print(roll_num)
+        # print(roll_num)
         screen.blit(bishop_3,(width-500,height/2-150))
     if roll_num==4:
-        print(roll_num)
+        # print(roll_num)
         screen.blit(knight_4,(width-500,height/2-150))
     if roll_num==5:
-        print(roll_num)
+        # print(roll_num)
         screen.blit(rook_5,(width-500,height/2-150))
     if roll_num==6:
-        print(roll_num)
+        # print(roll_num)
         screen.blit(queen_6,(width-500,height/2-150))
     
 
