@@ -380,18 +380,18 @@ def check_valid_moves():
     # print(valid_options,"yekhelna")
     return valid_options
 
-def all_val_try():
-    valid_moves = []
-    if(turn_step<2):
-        all_moves_lists = check_options(white_pieces, white_locations, 'white')
-    else:
-        all_moves_lists = check_options(black_pieces, black_locations, 'black')
-    selected_piece_moves = all_moves_lists[selection]
-    for move in selected_piece_moves:
-        # Make a hypothetical move
-        hypothetical_player_pieces = player_pieces.copy()
-        piece_index = hypothetical_player_pieces.index(piece_location)
-        hypothetical_player_pieces[piece_index] = move
+# def all_val_try():
+#     valid_moves = []
+#     if(turn_step<2):
+#         all_moves_lists = check_options(white_pieces, white_locations, 'white')
+#     else:
+#         all_moves_lists = check_options(black_pieces, black_locations, 'black')
+#     selected_piece_moves = all_moves_lists[selection]
+#     for move in selected_piece_moves:
+#         # Make a hypothetical move
+#         hypothetical_player_pieces = player_pieces.copy()
+#         piece_index = hypothetical_player_pieces.index(piece_location)
+#         hypothetical_player_pieces[piece_index] = move
         
         
 
@@ -603,8 +603,8 @@ while run:
             draw_promotion()
             check_promo_select()
     if selection != 100:
-        # valid_moves = check_valid_moves()
-        valid_moves=all_val_try()
+        valid_moves = check_valid_moves()
+        # valid_moves=all_val_try()
         draw_valid(valid_moves)
         if selected_piece == 'king':
             draw_castling(castling_moves)
