@@ -54,9 +54,6 @@ cor_3=pygame.transform.scale(cor_3,(300,300))
 cor_4=pygame.transform.scale(cor_4,(300,300))
 frame=[cor_1,cor_2,cor_3,cor_4]
 
-# dice_map_white = [[8,9,10,11,12,13,14,15],[0,7],[1,6],[2,5],[3],[4]]  # pawn, rook , knight, bishop, queen, king
-# dice_map_black = [[8,9,10,11,12,13,14,15],[0,7],[1,6],[2,5],[3],[4]]  # pawn, rook , knight, bishop, queen, king
-
 roll_num=0
 
 captured_pieces_white = []
@@ -156,7 +153,7 @@ def set_pieces():
         if turn_step >= 2:
             if selection == i:
                 pygame.draw.rect(screen, 'blue', [black_locations[i][0] * square_size + 31, black_locations[i][1] * square_size + 31,
-                                                  100, 100], 2)    
+                                                  square_size+1, square_size+1], 2)    
 
 # function to check all pieces valid options on board
 def check_options(pieces, locations, turn):
@@ -349,13 +346,11 @@ def check_valid_moves():
             valid_options = options_list[ind]
             for i in range(len(valid_options)-1,-1,-1):
                 original_loc = white_locations[ind]
-                # print("white locations before update:")
-                # print(white_locations)
                 white_locations[ind] = valid_options[i]
-                # print("white locations after update:")
-                # print(white_locations)
+    
                 if in_check('white',valid_options[i]):
                     options_list[ind].remove(valid_options[i])
+
                 white_locations[ind] = original_loc
                 if len(valid_options) ==0 :
                     winner = 'black'
@@ -367,16 +362,16 @@ def check_valid_moves():
             valid_options = options_list[ind]
             for i in range(len(valid_options)-1,-1,-1):
                 original_loc = black_locations[ind]
-                # print("black locations before update:")
-                # print(black_locations)
                 black_locations[ind] = valid_options[i]
-                # print("black locations after update:")
-                # print(black_locations)
+                
                 if in_check('black',valid_options[i]):
                     options_list[ind].remove(valid_options[i])
+
                 black_locations[ind] = original_loc
+
                 if len(valid_options) ==0 :
                     winner = 'white'
+
     return options_list
 
 def in_check(color,moved_pos):
@@ -390,16 +385,18 @@ def in_check(color,moved_pos):
         if 'king' in white_pieces:
             king_index = white_pieces.index('king')
             king_location = white_locations[king_index]
-            # print("white king location:" )
-            # print(king_location)
-            
             black_options_dummy = check_options(black_pieces,black_locations,'black')
+            
             if(moved_pos in black_locations):
+               
                 del_ind = black_locations.index(moved_pos)
-                black_options_dummy[del_ind] = []
-
-            # print("dummy_moves:")
-            # print(black_options_dummy)
+                del_piece = black_pieces[del_ind]
+                black_pieces.pop(del_ind)
+                black_locations.pop(del_ind)
+                black_options_dummy = check_options(black_pieces,black_locations,'black')
+                black_pieces.append(del_piece)
+                black_locations.append(moved_pos)
+           
             for black_option in black_options_dummy:
                     if king_location in black_option:
                         check_w = True
@@ -410,14 +407,17 @@ def in_check(color,moved_pos):
         if 'king' in black_pieces:
                 king_index = black_pieces.index('king')
                 king_location = black_locations[king_index]
-                # print("black king location: ")
-                # print(king_location)
                 white_options_dummy = check_options(white_pieces,white_locations,'white')
+
                 if(moved_pos in white_locations):
                     del_ind = white_locations.index(moved_pos)
-                    white_options_dummy[del_ind] = []
-                # print("dummy_moves:")
-                # print(white_options_dummy)
+                    del_piece = white_pieces[del_ind]
+                    white_pieces.pop(del_ind)
+                    white_locations.pop(del_ind)
+                    white_options_dummy = check_options(white_pieces,white_locations,'white')
+                    white_pieces.append(del_piece)
+                    white_locations.append(moved_pos)
+                
                 for white_option in white_options_dummy:
                     if king_location in white_option:
                         check_b = True
@@ -635,33 +635,20 @@ def dice_show(roll_num):
     screen.blit(pawn_1,(width-500,height/2-150))
     if roll_num=='pawn':
         screen.blit(pawn_1,(width-500,height/2-150))
-        # print(roll_num)
     if roll_num=='rook':
-        # print(roll_num)
         screen.blit(rook_5,(width-500,height/2-150))
     if roll_num=='bishop':
-        # print(roll_num)
         screen.blit(bishop_3,(width-500,height/2-150))
     if roll_num=='knight':
-        # print(roll_num)
         screen.blit(knight_4,(width-500,height/2-150))
     if roll_num=='queen':
-        # print(roll_num)
         screen.blit(queen_6,(width-500,height/2-150))
     if roll_num=='king':
-        # print(roll_num)
         screen.blit(king_2,(width-500,height/2-150))
 
 def dice_roll(roll_num):
-   
     global frame
-    # for frame in frame:
-    #     screen.blit(frame,(width-500,height/2-150) )
-
     
-    # pygame.draw.rect(screen, "red", pygame.Rect(900,500,20,50))
-    print("rolling")
-    #print(roll_num)
     screen.blit(cor_1,(width-500,height/2-150))
     pygame.display.update()
     time.sleep(0.08)
@@ -703,7 +690,6 @@ def dice_roll(roll_num):
     pygame.draw.rect(screen,'grey',pygame.Rect(width-490,height/2-115,270,238))
     pygame.display.update()
     dice_show(roll_num)
-    
     
 
 
@@ -750,11 +736,10 @@ while run:
             draw_promotion()
             check_promo_select()
     if selection != 100:
-        # valid_moves = check_valid_moves()
-        # valid_moves=all_val_try()
         draw_valid(valid_moves)
         if selected_piece == 'king':
             draw_castling(castling_moves)
+
     # event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -762,15 +747,12 @@ while run:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 run = False
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not game_over:
-            # print(event.pos[0],event.pos[1])
-               #dice again
-            
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not game_over:            
             
             x_coord = (event.pos[0] -30)// square_size
             y_coord = (event.pos[1]-30) // square_size
             click_coords = (int(x_coord), int(y_coord)) 
-            # print(click_coords)
+           
             
             if turn_step <= 1 :
                 if width-415 <= mouse[0] <= width-295 and height/2+140 <= mouse[1] <= height/2+200 and not dice_rolled:
@@ -780,75 +762,73 @@ while run:
                     print(roll_num)
                     dice_roll(roll_num)
                     dice_rolled = True
-                # if click_coords == (8, 8) or click_coords == (9, 8):
-                #     winner = 'black'
                 
-                
-                play_piece=[]
+                if dice_rolled:
+                    play_piece=[]
 
-                for i in range(len(white_pieces)):
-                    if white_pieces[i] == roll_num:
-                           play_piece.append(white_locations[i])
+                    for i in range(len(white_pieces)):
+                        if white_pieces[i] == roll_num:
+                            play_piece.append(white_locations[i])
 
-                print(play_piece)
-                if click_coords in play_piece:
-                    selection = white_locations.index(click_coords)
-                    valid_moves = all_possible_options[selection]
-                    # check what piece is selected, so you can only draw castling moves if king is selected
-                    selected_piece = white_pieces[selection]
-                    if turn_step == 0:
-                        turn_step = 1
-                if click_coords in valid_moves and selection != 100:
-                    # white_ep = check_ep(white_locations[selection], click_coords)
-                    white_locations[selection] = click_coords
-                    white_moved[selection] = True
-                    if click_coords in black_locations:
-                        black_piece = black_locations.index(click_coords)
-                        captured_pieces_white.append(black_pieces[black_piece])
-                        if black_pieces[black_piece] == 'king':
-                            winner = 'white'
-                        black_pieces.pop(black_piece)
-                        black_locations.pop(black_piece)
-                        black_moved.pop(black_piece)
-                        
+                    print(play_piece)
+                    if click_coords in play_piece:
+                        selection = white_locations.index(click_coords)
+                        valid_moves = all_possible_options[selection]
+                        # check what piece is selected, so you can only draw castling moves if king is selected
+                        selected_piece = white_pieces[selection]
+                        if turn_step == 0:
+                            turn_step = 1
+                    if click_coords in valid_moves and selection != 100:
+                        # white_ep = check_ep(white_locations[selection], click_coords)
+                        white_locations[selection] = click_coords
+                        white_moved[selection] = True
+                        if click_coords in black_locations:
+                            black_piece = black_locations.index(click_coords)
+                            captured_pieces_white.append(black_pieces[black_piece])
+                            if black_pieces[black_piece] == 'king':
+                                winner = 'white'
+                            black_pieces.pop(black_piece)
+                            black_locations.pop(black_piece)
+                            black_moved.pop(black_piece)
+                            
 
-                    # adding check if en passant pawn was captured
-                    if click_coords == black_ep:
-                        black_piece = black_locations.index((black_ep[0], black_ep[1]+ 1))
-                        captured_pieces_white.append(black_pieces[black_piece])
-                        black_pieces.pop(black_piece)
-                        black_locations.pop(black_piece)
-                        black_moved.pop(black_piece)
+                        # adding check if en passant pawn was captured
+                        if click_coords == black_ep:
+                            black_piece = black_locations.index((black_ep[0], black_ep[1]+ 1))
+                            captured_pieces_white.append(black_pieces[black_piece])
+                            black_pieces.pop(black_piece)
+                            black_locations.pop(black_piece)
+                            black_moved.pop(black_piece)
 
-                    black_options = check_options(black_pieces, black_locations, 'black')
-                    white_options = check_options(white_pieces, white_locations, 'white')
-                    turn_step = 2
-                    selection = 100
-                    valid_moves = []
-                    continue
-                # add option to castle
-                elif selection != 100 and selected_piece == 'king':
-                    # print(castling_moves)
-                    for roll_num in range(len(castling_moves)):
-                        if click_coords == castling_moves[roll_num][0]:
-                            # print("hereW",castling_moves[roll_num][0])
-                            white_locations[selection] = click_coords
-                            white_moved[selection] = True
-                            if click_coords == (2, 7):
-                                rook_coords = (0, 7)
-                            else:
-                                rook_coords = (7, 7)
-                            rook_index = white_locations.index(rook_coords)
-                            white_locations[rook_index] = castling_moves[roll_num][1]
-                            black_options = check_options(black_pieces, black_locations, 'black')
-                            white_options = check_options(white_pieces, white_locations, 'white')
-                            turn_step = 2
-                            selection = 100
-                            valid_moves = []
-                    continue
+                        black_options = check_options(black_pieces, black_locations, 'black')
+                        white_options = check_options(white_pieces, white_locations, 'white')
+                        turn_step = 2
+                        selection = 100
+                        valid_moves = []
+                        continue
+                    # add option to castle
+                    elif selection != 100 and selected_piece == 'king':
+                        # print(castling_moves)
+                        for roll_num in range(len(castling_moves)):
+                            if click_coords == castling_moves[roll_num][0]:
+                                # print("hereW",castling_moves[roll_num][0])
+                                white_locations[selection] = click_coords
+                                white_moved[selection] = True
+                                if click_coords == (2, 7):
+                                    rook_coords = (0, 7)
+                                else:
+                                    rook_coords = (7, 7)
+                                rook_index = white_locations.index(rook_coords)
+                                white_locations[rook_index] = castling_moves[roll_num][1]
+                                black_options = check_options(black_pieces, black_locations, 'black')
+                                white_options = check_options(white_pieces, white_locations, 'white')
+                                turn_step = 2
+                                selection = 100
+                                valid_moves = []
+                        continue
+
             if turn_step > 1:
-                # if click_coords == (8, 8) or click_coords == (9, 8):
-                #     winner = 'white'
+
                 if width-415 <= mouse[0] <= width-295 and (height/2)-180 <= mouse[1] <= (height/2)-120 and dice_rolled:
                     all_possible_options = check_valid_moves()
                     dice_list = update_dice_list(all_possible_options,'black')
@@ -857,67 +837,70 @@ while run:
                     dice_roll(roll_num)
                     dice_rolled = False
                 
-                play_piece=[]
-                
-                for i in range(len(black_pieces)):
-                    if black_pieces[i] == roll_num:
-                           play_piece.append(black_locations[i])
-                print(play_piece)
-                print(click_coords)
-                if click_coords in play_piece:
-                    selection = black_locations.index(click_coords)
-                    valid_moves = all_possible_options[selection]
-                    # check what piece is selected, so you can only draw castling moves if king is selected
-                    selected_piece = black_pieces[selection]
-                    if turn_step == 2:
-                        turn_step = 3
-                if click_coords in valid_moves and selection != 100:
-                    # black_ep = check_ep(black_locations[selection], click_coords)
-                    black_locations[selection] = click_coords
-                    black_moved[selection] = True
-                    if click_coords in white_locations:
-                        white_piece = white_locations.index(click_coords)
-                        captured_pieces_black.append(white_pieces[white_piece])
-                        if white_pieces[white_piece] == 'king':
-                            winner = 'black'
-                        white_pieces.pop(white_piece)
-                        white_locations.pop(white_piece)
-                        white_moved.pop(white_piece)
-                       
+                if not dice_rolled:
+
+                    play_piece=[]
                     
-                    if click_coords == white_ep:
-                        white_piece = white_locations.index((white_ep[0], white_ep[1] + 1))
-                        captured_pieces_black.append(white_pieces[white_piece])
-                        white_pieces.pop(white_piece)
-                        white_locations.pop(white_piece)
-                        white_moved.pop(white_piece)
-                    black_options = check_options(black_pieces, black_locations, 'black')
-                    white_options = check_options(white_pieces, white_locations, 'white')
-                    turn_step = 0
-                    selection = 100
-                    valid_moves = []
-                    continue
-                # add option to castle
-                elif selection != 100 and selected_piece == 'king':
-                    # print(castling_moves)
-                    for roll_num in range(len(castling_moves)):
-                        if click_coords == castling_moves[roll_num][0]:
-                            # print("hereB",castling_moves[roll_num][0])
-                            black_locations[selection] = click_coords
-                            black_moved[selection] = True
-                            
-                            if click_coords == (2, 0):
-                                rook_coords = (0, 0)
-                            else:
-                                rook_coords = (7, 0)
-                            rook_index = black_locations.index(rook_coords)
-                            black_locations[rook_index] = castling_moves[roll_num][1]
-                            black_options = check_options(black_pieces, black_locations, 'black')
-                            white_options = check_options(white_pieces, white_locations, 'white')
-                            turn_step = 0
-                            selection = 100
-                            valid_moves = []
-                    continue
+                    for i in range(len(black_pieces)):
+                        if black_pieces[i] == roll_num:
+                            play_piece.append(black_locations[i])
+                    print(play_piece)
+                    print(click_coords)
+                    if click_coords in play_piece:
+                        selection = black_locations.index(click_coords)
+                        valid_moves = all_possible_options[selection]
+                        # check what piece is selected, so you can only draw castling moves if king is selected
+                        selected_piece = black_pieces[selection]
+                        if turn_step == 2:
+                            turn_step = 3
+                    if click_coords in valid_moves and selection != 100:
+                        # black_ep = check_ep(black_locations[selection], click_coords)
+                        black_locations[selection] = click_coords
+                        black_moved[selection] = True
+                        if click_coords in white_locations:
+                            white_piece = white_locations.index(click_coords)
+                            captured_pieces_black.append(white_pieces[white_piece])
+                            if white_pieces[white_piece] == 'king':
+                                winner = 'black'
+                            white_pieces.pop(white_piece)
+                            white_locations.pop(white_piece)
+                            white_moved.pop(white_piece)
+                        
+                        
+                        if click_coords == white_ep:
+                            white_piece = white_locations.index((white_ep[0], white_ep[1] + 1))
+                            captured_pieces_black.append(white_pieces[white_piece])
+                            white_pieces.pop(white_piece)
+                            white_locations.pop(white_piece)
+                            white_moved.pop(white_piece)
+                        black_options = check_options(black_pieces, black_locations, 'black')
+                        white_options = check_options(white_pieces, white_locations, 'white')
+                        turn_step = 0
+                        selection = 100
+                        valid_moves = []
+                        continue
+                    # add option to castle
+                    elif selection != 100 and selected_piece == 'king':
+                        # print(castling_moves)
+                        for roll_num in range(len(castling_moves)):
+                            if click_coords == castling_moves[roll_num][0]:
+                                # print("hereB",castling_moves[roll_num][0])
+                                black_locations[selection] = click_coords
+                                black_moved[selection] = True
+                                
+                                if click_coords == (2, 0):
+                                    rook_coords = (0, 0)
+                                else:
+                                    rook_coords = (7, 0)
+                                rook_index = black_locations.index(rook_coords)
+                                black_locations[rook_index] = castling_moves[roll_num][1]
+                                black_options = check_options(black_pieces, black_locations, 'black')
+                                white_options = check_options(white_pieces, white_locations, 'white')
+                                turn_step = 0
+                                selection = 100
+                                valid_moves = []
+                        continue
+                    
         if event.type == pygame.KEYDOWN and game_over:
             if event.key == pygame.K_RETURN:
                 game_over = False
@@ -949,5 +932,3 @@ while run:
     
     pygame.display.flip()
 pygame.quit()
-    
-    
