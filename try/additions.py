@@ -516,7 +516,7 @@ while run:
                     valid_moves = []
                 # add option to castle
                 elif selection != 100 and selected_piece == 'king':
-
+                    for q in range(len(castling_moves)):
                         if click_coords == castling_moves[q][0]:
                             white_locations[selection] = click_coords
                             white_moved[selection] = True
