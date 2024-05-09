@@ -63,6 +63,8 @@ captured_pieces_black = []
 turn_step = 0
 selection = 100
 valid_moves = []
+piece_highlights_white=[]
+piece_highlights_black=[]
 
 b_k=pygame.image.load('images/black_k.png')
 b_n=pygame.image.load('images/black_n.png')
@@ -135,6 +137,9 @@ roll_p1_rect = pygame.Rect(width - 415, (height / 2) + 130, 120, 60)
 roll_p2_rect = pygame.Rect(width - 415, (height / 2) - 180, 120, 60)
 yele=['pawn','pawn','knight','pawn','bishop','pawn','king']
 o=0
+highlight=False
+
+
 def chess_canvas():
     pygame.draw.rect(screen, "white", pygame.Rect(board_start_pt,board_start_pt, board_size, board_size))
     light_color=pygame.Color(255,255,255)
@@ -463,13 +468,26 @@ def dice_select(dice_list):
         face = random.randint(0,len(dice_list)-1)
         return dice_list[face]
 
+
+def draw_highlight(piece_highlights):
+    for i in range(len(piece_highlights)):
+        surf_high=pygame.Surface((square_size,square_size),pygame.SRCALPHA)
+        color=pygame.Color(0,255,50,150)
+        pygame.draw.circle(surf_high,color,(50,50),25)
+        # pygame.draw.rect(surf_high, color, [0,0, square_size-1, square_size-1], 10)
+        radius=10
+        highlighted=pygame.transform.box_blur(surf_high,radius)
+        screen.blit(highlighted,(piece_highlights[i][0]*square_size+30,piece_highlights[i][1]*square_size+30))
+    piece_highlights=[]
 # draw valid moves on screen
 def draw_valid(moves):
    
-    color = pygame.Color(180,180,180) 
+    color = pygame.Color(0,255,0,120) 
     for i in range(len(moves)):
-        pygame.draw.circle(screen, color, (moves[i][0] * square_size + 80, moves[i][1] * square_size + 80), square_size//2-5,7)
-     
+        surf=pygame.Surface((square_size,square_size),pygame.SRCALPHA)
+        # pygame.draw.circle(surf, color, (0, 0), square_size//2-5,7)
+        pygame.draw.circle(surf, color, ( 50,  50), square_size//2-5,7)
+        screen.blit(surf,(moves[i][0] * square_size +board_start_pt,moves[i][1] * square_size +board_start_pt))
 
 # draw captured pieces on side of screen
 def draw_captured():
@@ -508,33 +526,31 @@ def draw_check():
     if 'king' in white_pieces:
         king_index = white_pieces.index('king')
         king_location = white_locations[king_index]
-        pygame.draw.rect(screen, 'dark red', [white_locations[king_index][0] * square_size + 29,
-                                                              white_locations[king_index][1] * square_size + 29, square_size+1, square_size+1], 5)
-        pygame.draw.rect(screen, 'red', [white_locations[king_index][0] * square_size + 34,
-                                                              white_locations[king_index][1] * square_size + 34, square_size-9, square_size-9], 5)
+        
         for i in range(len(black_options)):
-                if king_location in black_options[i]:
-                    check_w = True
-                    pygame.draw.rect(screen, 'dark red', [white_locations[king_index][0] * square_size + 31,
-                                                              white_locations[king_index][1] * square_size + 31, square_size, square_size], 5)
-                    pygame.draw.rect(screen, 'red', [white_locations[king_index][0] * square_size + 36,
-                                                              white_locations[king_index][1] * square_size + 36, square_size-5, square_size-5], 5)
-    
+            if king_location in black_options[i]:
+                check_w = True
+                color=pygame.Color(255,0,0,200)
+                pygame.draw.rect(screen, 'red', [white_locations[king_index][0] * square_size + 29, white_locations[king_index][1] * square_size + 29, square_size+2, square_size+2], 3)
+                rect_surf = pygame.Surface((square_size -1, square_size - 1), pygame.SRCALPHA)
+                pygame.draw.rect(rect_surf, color, [0,0, square_size-1, square_size-1], 10)
+                radius = 10 
+                blurred_rect_surf = pygame.transform.box_blur(rect_surf, radius)
+                screen.blit(blurred_rect_surf, (white_locations[king_index][0] * square_size + 32, white_locations[king_index][1] * square_size + 32))
     if 'king' in black_pieces:
         king_index = black_pieces.index('king')
         king_location = black_locations[king_index]
         for i in range(len(white_options)):
             if king_location in white_options[i]:
                 check_b = True
-                pygame.draw.rect(screen, 'dark red', [black_locations[king_index][0] * square_size+31,
-                                                               black_locations[king_index][1] * square_size + 31, square_size, square_size], 5)
-                pygame.draw.rect(screen, 'dark red', [black_locations[king_index][0] * square_size+36,
-                                                               black_locations[king_index][1] * square_size + 36, square_size-5, square_size-5], 5)
-                    # pygame.draw.rect(screen, 'red', [white_locations[king_index][0] * square_size + 25,
-                    #                                           white_locations[king_index][1] * square_size + 25, square_size, square_size], 5)
-
-
-
+                color=pygame.Color(255,0,0,200)
+                pygame.draw.rect(screen, 'red', [white_locations[king_index][0] * square_size + 29, white_locations[king_index][1] * square_size + 29, square_size+2, square_size+2], 3)
+                rect_surf = pygame.Surface((square_size -1, square_size - 1), pygame.SRCALPHA)
+                pygame.draw.rect(rect_surf, color, [0,0, square_size-1, square_size-1], 10)
+                radius = 10 
+                blurred_rect_surf = pygame.transform.box_blur(rect_surf, radius)
+                screen.blit(blurred_rect_surf, (white_locations[king_index][0] * square_size + 32, white_locations[king_index][1] * square_size + 32))
+                
 # add castling
 def check_castling():
     # king must not currently be in check, neither the rook nor king has moved previously, nothing between
@@ -769,6 +785,7 @@ white_options = check_options(white_pieces, white_locations, 'white')
 dice_rolled = False
 run = True
 while run:
+    
     mouse = pygame.mouse.get_pos()
     timer.tick(fps)
     if counter < 30:
@@ -782,6 +799,7 @@ while run:
     draw_check()
     dice_show(roll_num)
     draw_captured()
+    
     if turn_step==0:
         pygame.draw.rect(screen, button_color, roll_p1_rect)
     if roll_p1_rect.collidepoint(mouse) and turn_step == 0:
@@ -835,6 +853,12 @@ while run:
         if white_promote or black_promote:
             draw_promotion()
             check_promo_select()
+    
+    if  turn_step<2:
+        # print(highlight,piece_highlights)
+        draw_highlight(piece_highlights_white)
+    if turn_step>1:
+        draw_highlight(piece_highlights_black)
     if selection != 100:
         draw_valid(valid_moves)
         if selected_piece == 'king':
@@ -854,11 +878,9 @@ while run:
                 run=False
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and  exit_button.collidepoint(event.pos): 
-            # print("ye bhi")
             run=False
             
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and (rematch_button.collidepoint(event.pos) or (rematch_button_rect.collidepoint(event.pos) and game_over)):
-            # print("mera hogaya")
             game_over = False
             winner = ''
             white_pieces = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook',
@@ -878,6 +900,7 @@ while run:
             turn_step = 0                
             selection = 100
             valid_moves = []
+            piece_highlights=[]
             black_options = check_options(black_pieces, black_locations, 'black')
             white_options = check_options(white_pieces, white_locations, 'white')                
             roll_num=0
@@ -891,28 +914,33 @@ while run:
             
            
             if turn_step <= 1 :
-                # roller=small_font.render("White to Roll",True,'Silver')
+                piece_highlights_black=[]
                 if width-415 <= mouse[0] <= width-295 and height/2+140 <= mouse[1] <= height/2+200 and not dice_rolled:
                     all_possible_options = check_valid_moves()
                     dice_list = update_dice_list(all_possible_options,'white')
                     if len(dice_list)==0:
                         winner='Black'
                         game_over=True
-                    # roll_num = dice_select(dice_list)
-                    roll_num=yele[o]
-                    o=o+1
+                    roll_num = dice_select(dice_list)
+                    # roll_num=yele[o]
+                    # o=o+1
                     dice_roll(roll_num)
                     dice_rolled = True
+                    
                 
                 if dice_rolled:
                     play_piece=[]
-
                     for i in range(len(white_pieces)):
                         if white_pieces[i] == roll_num:
                             play_piece.append(white_locations[i])
+                            piece_highlights_white.append(white_locations[i])
+                            
+                    
 
-            
                     if click_coords in play_piece:
+                        
+                        piece_highlights_white=[]
+                        piece_highlights_black=[]
                         selection = white_locations.index(click_coords)
                         valid_moves = all_possible_options[selection]
                         # check what piece is selected, so you can only draw castling moves if king is selected
@@ -964,6 +992,7 @@ while run:
                         continue
 
             if turn_step > 1:
+                piece_highlights_white=[]
                 # roller=small_font.render("Black to Roll",True,'Silver')
                 if width-415 <= mouse[0] <= width-295 and (height/2)-180 <= mouse[1] <= (height/2)-120 and dice_rolled:
                     all_possible_options = check_valid_moves()
@@ -974,9 +1003,9 @@ while run:
                         game_over=True
                         
                         
-                    # roll_num = dice_select(dice_list)
-                    roll_num=yele[o]
-                    o=o+1
+                    roll_num = dice_select(dice_list)
+                    # roll_num=yele[o]
+                    # o=o+1
                     dice_roll(roll_num)
                     dice_rolled = False
                 
@@ -987,8 +1016,11 @@ while run:
                     for i in range(len(black_pieces)):
                         if black_pieces[i] == roll_num:
                             play_piece.append(black_locations[i])
-                    
+                            piece_highlights_black.append(white_locations[i])
+                            # highlight=True
                     if click_coords in play_piece:
+    
+                  
                         selection = black_locations.index(click_coords)
                         valid_moves = all_possible_options[selection]
                         # check what piece is selected, so you can only draw castling moves if king is selected
