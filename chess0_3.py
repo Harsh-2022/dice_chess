@@ -19,7 +19,7 @@ timer = pygame.time.Clock()
 fps = 60
 
 sq_size=(board_size)/8
-p_size=sq_size-17
+p_size=sq_size-18
 white_pieces = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook',
                 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
 white_locations = [(0, 7), (1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (7, 7),
@@ -159,9 +159,9 @@ def set_pieces():
     for i in range(len(white_pieces)):
         index = piece_list.index(white_pieces[i])
         if white_pieces[i] == 'pawn':
-            screen.blit(w_p, (white_locations[i][0] * square_size +36, white_locations[i][1] * square_size +40))
+            screen.blit(w_p, (white_locations[i][0] * square_size +40, white_locations[i][1] * square_size +40))
         else:
-            screen.blit(white_images[index], (white_locations[i][0] * square_size + 37, white_locations[i][1] * square_size + 40))
+            screen.blit(white_images[index], (white_locations[i][0] * square_size + 40, white_locations[i][1] * square_size + 40))
         if turn_step < 2:
             if selection == i:
                 color=pygame.Color(0,255,0,255)
@@ -563,12 +563,12 @@ def draw_check():
             if king_location in white_options[i]:
                 check_b = True
                 color=pygame.Color(255,0,0,200)
-                pygame.draw.rect(screen, 'red', [white_locations[king_index][0] * square_size + 29, white_locations[king_index][1] * square_size + 29, square_size+2, square_size+2], 3)
+                pygame.draw.rect(screen, 'red', [black_locations[king_index][0] * square_size + 29, black_locations[king_index][1] * square_size + 29, square_size+2, square_size+2], 3)
                 rect_surf = pygame.Surface((square_size -1, square_size - 1), pygame.SRCALPHA)
                 pygame.draw.rect(rect_surf, color, [0,0, square_size-1, square_size-1], 10)
                 radius = 10 
                 blurred_rect_surf = pygame.transform.box_blur(rect_surf, radius)
-                screen.blit(blurred_rect_surf, (white_locations[king_index][0] * square_size + 32, white_locations[king_index][1] * square_size + 32))
+                screen.blit(blurred_rect_surf, (black_locations[king_index][0] * square_size + 32, black_locations[king_index][1] * square_size + 32))
                 
 # add castling
 def check_castling():
