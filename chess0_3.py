@@ -766,7 +766,7 @@ def draw_game_over():
 
     # Draw the "Game Over" text
     pygame.draw.rect(screen,'black',[board_size+50,0,width-(board_size+50),height])
-    game_over_text = big_font.render(winner+" Wins!!!", True,'white')
+    game_over_text = big_font.render(winner, True,'white')
     text_rect = game_over_text.get_rect()
     text_rect.midtop = ((board_size+width+50)//2, 100)
     screen.blit(game_over_text, text_rect)
@@ -928,9 +928,13 @@ while run:
                 if roll_p1_rect.collidepoint(event.pos) and not dice_rolled:
                     all_possible_options = check_valid_moves()
                     dice_list = update_dice_list(all_possible_options,'white')
-                    if len(dice_list)==0:
-                        winner='Black'
+                    if len(dice_list)==0 and check_w:
+                        winner='Black Wins!!!'
                         game_over=True
+                    if len(dice_list)==0 and not check_w:
+                        winner='Draw! STALEMATE!!'
+                        game_over=True
+                 
                     roll_num = dice_select(dice_list)
                     # roll_num=yele[o]
                     # o=o+1
@@ -1005,8 +1009,11 @@ while run:
                     all_possible_options = check_valid_moves()
                     # print(all_possible_options)
                     dice_list = update_dice_list(all_possible_options,'black')
-                    if len(dice_list)==0:
-                        winner='White'
+                    if len(dice_list)==0 and check_b:
+                        winner='White Wins!!!'
+                        game_over=True
+                    if len(dice_list)==0 and not check_b:
+                        winner='Draw! STALEMATE!!'
                         game_over=True
                         
                         
