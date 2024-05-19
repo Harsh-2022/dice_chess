@@ -132,13 +132,12 @@ exit_button = pygame.Rect(width - 150 - 20, 20, 150, 50)
 
 
 button_color=pygame.Color(	159, 132, 189)
-
+ 
 roll_p1_rect = pygame.Rect(board_size+board_start_pt+(width-(board_size+board_start_pt))/2-60, (height / 2) + 130, 120, 60)
 roll_p2_rect = pygame.Rect(board_size+board_start_pt+(width-(board_size+board_start_pt))/2-60, (height / 2) - 180, 120, 60)
 yele=['pawn','pawn','knight','pawn','bishop','pawn','king']
 o=0
 highlight=False
-
 
 def chess_canvas():
     pygame.draw.rect(screen, "white", pygame.Rect(board_start_pt,board_start_pt, board_size, board_size))
@@ -165,9 +164,12 @@ def set_pieces():
             screen.blit(white_images[index], (white_locations[i][0] * square_size + 37, white_locations[i][1] * square_size + 40))
         if turn_step < 2:
             if selection == i:
-                pygame.draw.rect(screen, 'red', [white_locations[i][0] * square_size +31, white_locations[i][1] * square_size +31,
-                                                 square_size+1, square_size+1], 2)
-
+                color=pygame.Color(0,255,0,255)
+                rect_surf = pygame.Surface((square_size , square_size ), pygame.SRCALPHA)
+                pygame.draw.circle(rect_surf,color,(square_size//2,square_size//2),square_size//2 +square_size//4+5,30)
+                radius = 25
+                blurred_rect_surf = pygame.transform.box_blur(rect_surf, radius)
+                screen.blit(blurred_rect_surf, (white_locations[i][0] * square_size + 30, white_locations[i][1] * square_size + 30))
     for i in range(len(black_pieces)):
         index = piece_list.index(black_pieces[i])
         if black_pieces[i] == 'pawn':
@@ -176,9 +178,13 @@ def set_pieces():
             screen.blit(black_images[index], (black_locations[i][0] * square_size+37, black_locations[i][1] * square_size+40))
         if turn_step >= 2:
             if selection == i:
-                pygame.draw.rect(screen, 'blue', [black_locations[i][0] * square_size + 31, black_locations[i][1] * square_size + 31,
-                                                  square_size+1, square_size+1], 2)    
-
+                color=pygame.Color(0,255,0,255)
+                rect_surf = pygame.Surface((square_size , square_size ), pygame.SRCALPHA)
+                pygame.draw.circle(rect_surf,color,(square_size//2,square_size//2),square_size//2 +square_size//4+5,30)
+                radius = 25
+                blurred_rect_surf = pygame.transform.box_blur(rect_surf, radius)
+                screen.blit(blurred_rect_surf, (black_locations[i][0] * square_size + 30, black_locations[i][1] * square_size + 30))
+ 
 # function to check all pieces valid options on board
 def check_options(pieces, locations, turn):
     moves_list = []
@@ -471,13 +477,26 @@ def dice_select(dice_list):
 
 def draw_highlight(piece_highlights):
     for i in range(len(piece_highlights)):
-        surf_high=pygame.Surface((square_size,square_size),pygame.SRCALPHA)
-        color=pygame.Color(0,255,50,150)
-        pygame.draw.circle(surf_high,color,(square_size//2,square_size//2),25)
-        # pygame.draw.rect(surf_high, color, [0,0, square_size-1, square_size-1], 10)
-        radius=10
-        highlighted=pygame.transform.box_blur(surf_high,radius)
-        screen.blit(highlighted,(piece_highlights[i][0]*square_size+30,piece_highlights[i][1]*square_size+30))
+        # surf_high=pygame.Surface((square_size,square_size),pygame.SRCALPHA)
+        # color=pygame.Color(0,255,50,150)
+        # pygame.draw.circle(surf_high,color,(square_size//2,square_size//2),25)
+        # # pygame.draw.rect(surf_high, color, [0,0, square_size-1, square_size-1], 10)
+        # radius=10
+        # highlighted=pygame.transform.box_blur(surf_high,radius)
+        # screen.blit(highlighted,(piece_highlights[i][0]*square_size+30,piece_highlights[i][1]*square_size+30))
+   
+        # if (piece_highlights[i][0]+piece_highlights[i][1])%2!=0:
+        #     color=pygame.Color(50,50,50,255)
+        # else:
+        #     color=pygame.Color(200,200,200,255)
+        # print(color)
+        color=pygame.Color(159, 132, 189,255)
+        rect_surf = pygame.Surface((square_size , square_size ), pygame.SRCALPHA)
+        # pygame.draw.rect(rect_surf, color, [0,0, square_size+2, square_size+2], 8)
+        pygame.draw.circle(rect_surf,color,(square_size//2,square_size//2),square_size//2 +square_size/4+5,25)
+        # radius = 15
+        # blurred_rect_surf = pygame.transform.box_blur(rect_surf, radius)
+        screen.blit(rect_surf, (piece_highlights[i][0] * square_size + 30, piece_highlights[i][1] * square_size + 30))
     piece_highlights=[]
 
 # draw valid moves on screen
@@ -530,8 +549,8 @@ def draw_check():
         for i in range(len(black_options)):
             if king_location in black_options[i]:
                 check_w = True
-                color=pygame.Color(255,0,0,200)
                 pygame.draw.rect(screen, 'red', [white_locations[king_index][0] * square_size + 29, white_locations[king_index][1] * square_size + 29, square_size+2, square_size+2], 3)
+                color=pygame.Color(255,0,0,200)
                 rect_surf = pygame.Surface((square_size -1, square_size - 1), pygame.SRCALPHA)
                 pygame.draw.rect(rect_surf, color, [0,0, square_size-1, square_size-1], 10)
                 radius = 10 
@@ -828,7 +847,8 @@ while run:
     rollp2_rect = roll_p2.get_rect()
     rollp2_rect.center = roll_p2_rect.center
     screen.blit(roll_p2,rollp2_rect)
-    
+     
+     
     exit_t_rect = exit_t.get_rect()
     exit_t_rect.center = exit_button.center
     screen.blit(exit_t, exit_t_rect)
