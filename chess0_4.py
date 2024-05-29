@@ -924,6 +924,8 @@ while run:
         if white_promote or black_promote:
             draw_promotion()
             check_promo_select()
+            black_options = check_options(black_pieces, black_locations, 'black')
+            white_options = check_options(white_pieces, white_locations, 'white')
     
     if  turn_step<2:
         draw_highlight(piece_highlights_white)
